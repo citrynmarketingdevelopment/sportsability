@@ -1,0 +1,16 @@
+.doodle { width: 80px; height: 80px; color: var(--green); pointer-events: none; flex-shrink: 0; }
+.pageIntro { position: relative; overflow: hidden; padding-block: 68px 76px; background: var(--pale); }
+.pageIntro h1 { max-width: 840px; }
+.introCopy { max-width: 640px; color: var(--muted); margin-top: 24px; font-size: 20px; }
+.introStar { position: absolute; right: max(7vw, 30px); bottom: 28px; width: 90px; height: 90px; transform: rotate(12deg); opacity: .75; }
+.sectionHeading { max-width: 690px; margin-bottom: 40px; }
+.sectionHeading > div { color: var(--muted); margin-top: 20px; }
+.cta { background: var(--pale-green); padding-block: 66px; border-block: 1px solid #e4eddc; }
+.ctaInner { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 36px; }
+.ctaInner h2 { font-size: clamp(1.8rem, 3vw, 2.65rem); }
+.ctaInner p { margin-top: 12px; color: var(--muted); }
+.ctaInner > a { flex-shrink: 0; }
+.ctaHeart { width: 60px; height: 60px; transform: rotate(-14deg); }
+.ctaStar { position: absolute; right: 5px; top: -42px; width: 28px; height: 28px; }
+@media(max-width:900px) { .ctaHeart { display: none; } .introStar { width: 60px; height: 60px; opacity: .3; } }
+@media(max-width:700px) { .pageIntro { padding-block: 48px; } .introCopy { font-size: 18px; } .cta { padding-block: 46px; } .ctaInner { flex-direction: column; align-items: flex-start; gap: 24px; } .introStar { right: 12px; bottom: 12px; } }

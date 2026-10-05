@@ -1,0 +1,50 @@
+.mission { display: grid; grid-template-columns: 1fr 1fr; gap: 88px; align-items: center; }
+.photoWrap { position: relative; }
+.photo { position: relative; overflow: hidden; aspect-ratio: 1.05; border-radius: 24px; background: var(--pale); }
+.image { object-fit: cover; }
+.photoHeart { position: absolute; width: 72px; height: 72px; right: -24px; top: -28px; transform: rotate(12deg); }
+.missionCopy h2, .successInner h2, .expertiseIntro h2, .welcome h2 { font-size: clamp(2rem, 3.3vw, 2.85rem); line-height: 1.16; letter-spacing: -0.045em; }
+.missionCopy p { margin-top: 20px; font-size: 1.0625rem; color: var(--muted); line-height: 1.7; }
+.successSection { padding: 72px 0; background: var(--pale); }
+.successInner { display: grid; grid-template-columns: 1fr 1fr; gap: 88px; align-items: center; }
+.successInner > div:first-child { position: relative; }
+.successStar { position: absolute; width: 70px; height: 70px; right: 20px; top: 0; transform: rotate(10deg); }
+.successLead { font-family: var(--font-heading), sans-serif; font-size: 1.35rem; font-weight: 700; line-height: 1.4; margin-bottom: 16px; }
+.successCopy { color: var(--muted); line-height: 1.7; font-size: 1.0625rem; }
+.successWords { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 22px; }
+.successWords span { font-size: 0.9375rem; color: var(--blue); font-weight: 600; }
+.expertiseIntro { max-width: 710px; margin-bottom: 44px; }
+.expertiseIntro > p:last-child { color: var(--muted); font-size: 1.125rem; line-height: 1.65; margin-top: 20px; max-width: 650px; }
+.roles { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; }
+.role { position: relative; border-top: 1px solid var(--line); padding-top: 36px; padding-right: 55px; }
+.roleDoodle { width: 45px; height: 45px; position: absolute; right: 0; top: 31px; }
+.role h3 { font-size: 1.5rem; line-height: 1.25; letter-spacing: -0.035em; }
+.role > p { margin-top: 16px; color: var(--muted); font-size: 1.0625rem; line-height: 1.7; }
+.welcome { display: grid; grid-template-columns: 1fr 1fr; gap: 88px; padding-top: 12px; padding-bottom: 88px; }
+.welcome > div > p { color: var(--muted); line-height: 1.7; font-size: 1.0625rem; margin-top: 20px; max-width: 430px; }
+.welcomeList { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 0 25px; }
+.welcomeList li { padding: 16px 0; border-bottom: 1px solid var(--line); font-weight: 600; line-height: 1.4; }
+.welcome > div > .welcomeNote { max-width: 100%; font-size: 0.9375rem; margin: 20px 0 19px; }
+@media (max-width: 1023px) {
+  .mission, .successInner, .welcome { gap: 50px; }
+  .roles { gap: 38px; }
+  .successStar { width: 48px; height: 48px; right: 5px; top: -30px; }
+  .role { padding-right: 0; }
+  .roleDoodle { position: static; margin-bottom: 16px; }
+}
+@media (max-width: 767px) {
+  .mission, .successInner, .welcome { grid-template-columns: 1fr; gap: 43px; }
+  .photoWrap { margin-top: 8px; }
+  .photo { aspect-ratio: 1.2; }
+  .photoHeart { width: 62px; height: 62px; right: -7px; top: -25px; }
+  .successSection { padding: 54px 0; }
+  .successInner { gap: 24px; }
+  .successInner h2 { max-width: calc(100% - 80px); }
+  .successStar { right: 15px; top: 20px; width: 58px; height: 58px; }
+  .expertiseIntro { margin-bottom: 30px; }
+  .roles { grid-template-columns: 1fr; gap: 30px; }
+  .role { padding-top: 27px; padding-right: 35px; }
+  .roleDoodle { position: absolute; width: 34px; height: 34px; top: 26px; }
+  .welcome { padding-top: 0; padding-bottom: 55px; gap: 18px; }
+  .welcomeList { gap: 0 20px; }
+}

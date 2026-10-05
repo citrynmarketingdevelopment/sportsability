@@ -1,0 +1,98 @@
+.hero { padding-block: 58px 72px; overflow: hidden; }
+.heroGrid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 36px; align-items: center; }
+.heroCopy { position: relative; z-index: 1; padding-block: 24px; }
+.heroCopy h1 { font-size: clamp(42px, 4.9vw, 70px); line-height: 1.08; letter-spacing: -.045em; }
+.heroAccent { display: block; width: fit-content; color: var(--blue); position: relative; }
+.heroAccent svg { width: 100%; position: absolute; bottom: -16px; height: 19px; color: var(--green); }
+.heroDescription { font-size: 21px; max-width: 370px; color: var(--muted); margin-top: 36px; line-height: 1.55; }
+.heroActions { display: flex; flex-wrap: wrap; align-items: center; gap: 24px; margin-top: 30px; }
+.heroAbout { display: flex; align-items: center; gap: 7px; font-size: 15px; font-weight: 700; min-height: 44px; }
+.heroAbout:hover { color: var(--blue); }
+.heroVisual { position: relative; margin: 12px 4px 4px 8px; }
+.heroPhoto { aspect-ratio: 1.18; position: relative; overflow: hidden; border-radius: 32px; transform: rotate(2deg); background: #e6eedf; }
+.heroPhoto img { object-fit: cover; object-position: 51% center; }
+.heroSpark { position: absolute; left: -38px; top: -30px; width: 70px; height: 70px; color: var(--green); transform: rotate(-12deg); }
+.heroBall { position: absolute; right: -28px; bottom: -35px; width: 94px; height: 94px; color: var(--blue); background: var(--paper); border: 9px solid var(--paper); border-radius: 50%; transform: rotate(15deg); }
+.heroStar { position: absolute; left: -32px; bottom: -11px; width: 47px; height: 47px; transform: rotate(-14deg); }
+.welcome { background: var(--pale); padding-block: 45px; }
+.welcomeInner { display: grid; grid-template-columns: 60px 1fr 1.1fr; gap: 36px; align-items: center; }
+.welcomeHeart { width: 55px; height: 65px; transform: rotate(-17deg); }
+.welcome h2 { font-size: clamp(1.8rem, 2.9vw, 2.4rem); }
+.welcome p { font-size: 17px; color: var(--muted); }
+.welcome p:first-child { color: var(--ink); font-weight: 600; }
+.welcome p + p { margin-top: 8px; }
+.sectionTitle { position: relative; margin-bottom: 44px; }
+.sectionTitle > p:last-of-type { color: var(--muted); margin-top: 20px; }
+.programArrow { position: absolute; left: 375px; bottom: 32px; width: 100px; height: 100px; transform: rotate(-17deg); }
+.programGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 44px; }
+.program { min-width: 0; }
+.programPhoto { display: block; position: relative; aspect-ratio: 1.5; border-radius: var(--radius); overflow: hidden; background: var(--pale-green); }
+.programPhoto img { object-fit: cover; transition: transform .35s; }
+.programPhoto:hover img { transform: scale(1.025); }
+.photoArrow { position: absolute; right: 17px; bottom: 17px; background: var(--paper); color: var(--blue); width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; }
+.programHeading { display: flex; gap: 20px; justify-content: space-between; align-items: baseline; margin-top: 26px; }
+.programHeading h3 { font-size: 27px; }
+.price { font-family: var(--font-heading); color: var(--blue); font-size: 27px; font-weight: 800; flex-shrink: 0; letter-spacing: -.04em; }
+.program > p { color: var(--muted); margin-top: 14px; max-width: 490px; }
+.program .fee { font-size: 13px; margin-top: 15px; }
+.program > a:last-child { font-size: 16px; margin-top: 24px; }
+.moreSports { margin-top: 46px; font-size: 15px; text-align: center; color: var(--muted); padding-top: 26px; border-top: 1px solid var(--line); }
+.belong { padding-block: 82px; background: var(--pale-green); }
+.belongGrid { display: grid; grid-template-columns: .95fr 1.05fr; gap: 76px; align-items: center; }
+.familyPhoto { position: relative; aspect-ratio: .97; border-radius: var(--radius); }
+.familyPhoto > img { object-fit: cover; object-position: 51% center; border-radius: var(--radius); }
+.familyHeart { position: absolute; left: -28px; bottom: -25px; width: 83px; height: 83px; transform: rotate(-18deg); stroke-width: 3.5px; color: var(--blue); }
+.belongCopy > p { margin-top: 23px; color: var(--muted); }
+.belongCopy h2 { font-size: clamp(2rem, 3.3vw, 2.75rem); }
+.audience { list-style: none; padding: 0; margin: 24px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 13px 18px; }
+.audience li { display: flex; align-items: flex-start; gap: 10px; font-size: 15px; line-height: 1.4; }
+.audience svg { color: var(--green-dark); flex-shrink: 0; margin-top: 2px; }
+.belongCopy .fitNote { font-size: 16px; }
+.belongCopy > a { margin-top: 20px; font-size: 16px; }
+.approachInner { display: grid; grid-template-columns: 1.1fr 1fr; gap: 105px; align-items: center; }
+.approachTitle > svg { width: 50px; height: 50px; margin-bottom: 21px; transform: rotate(-12deg); }
+.approachTitle h2 { font-size: clamp(2rem, 3.3vw, 2.8rem); }
+.approachTitle p { margin-top: 24px; color: var(--muted); }
+.approachTitle a { margin-top: 24px; font-size: 16px; }
+.growthList > div { display: flex; gap: 24px; align-items: flex-start; padding-block: 27px; }
+.growthList > div + div { border-top: 1px solid var(--line); }
+.growthList h3 { font-size: 23px; }
+.growthList p { font-size: 16px; margin-top: 10px; color: var(--muted); }
+.growthList svg { height: 44px; width: 44px; color: var(--green-dark); }
+.growthMark { display: block; width: 44px; flex-shrink: 0; line-height: 1; font-size: 45px; color: var(--green-dark); font-family: var(--font-heading); }
+@media(min-width:1500px) { .hero { padding-block: 76px 86px; } }
+@media(max-width:1100px) { .heroGrid { gap: 18px; } .heroActions { gap: 15px; } .heroActions a { font-size: 14px; } .heroDescription { font-size: 19px; } .belongGrid { gap: 45px; } .approachInner { gap: 55px; } .programHeading h3,.price { font-size: 23px; } .programGrid { gap: 30px; } }
+@media(max-width:767px) {
+  .hero { padding-block: 36px 49px; }
+  .heroGrid { grid-template-columns: 1fr; gap: 32px; }
+  .heroCopy { padding-block: 0; }
+  .heroCopy h1 { font-size: clamp(45px, 8.5vw, 64px); }
+  .heroCopy .eyebrow { margin-bottom: 20px; }
+  .heroDescription { margin-top: 30px; max-width: 470px; }
+  .heroActions { margin-top: 24px; gap: 25px; }
+  .heroVisual { margin: 6px 8px 10px 4px; }
+  .heroPhoto { aspect-ratio: 1.45; border-radius: 24px; transform: rotate(1deg); }
+  .heroSpark { width: 45px; height: 45px; top: -20px; left: auto; right: -21px; }
+  .heroStar { display: none; }
+  .heroBall { width: 75px; height: 75px; right: -17px; bottom: -29px; }
+  .welcome { padding-block: 34px; }
+  .welcomeInner { grid-template-columns: 1fr; gap: 22px; position: relative; }
+  .welcomeHeart { position: absolute; right: 8px; top: 0; width: 48px; height: 48px; }
+  .welcome h2 { font-size: 31px; }
+  .programGrid { grid-template-columns: 1fr; gap: 40px; }
+  .programPhoto { height: auto; aspect-ratio: 1.5; }
+  .programHeading h3,.price { font-size: 24px; }
+  .programHeading { margin-top: 22px; gap: 10px; }
+  .program > p { font-size: 17px; }
+  .programArrow { width: 74px; height: 74px; left: auto; right: 10px; bottom: 36px; }
+  .sectionTitle { margin-bottom: 30px; }
+  .sectionTitle h2 { max-width: 80%; }
+  .moreSports { margin-top: 34px; }
+  .belong { padding-block: 56px; }
+  .belongGrid { grid-template-columns: 1fr; gap: 43px; }
+  .familyPhoto { aspect-ratio: 1.2; margin-inline: 5px; }
+  .familyHeart { width: 65px; height: 65px; left: -18px; bottom: -25px; }
+  .audience { gap: 15px 13px; }
+  .approachInner { grid-template-columns: 1fr; gap: 24px; }
+  .growthList > div { padding-block: 23px; gap: 20px; }
+}
