@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import heroSoccer from "../../public/images/hero-soccer.webp";
 import Link from "next/link";
 import { ArrowUpRight, Check } from "@phosphor-icons/react/dist/ssr";
 import { ArrowIcon, CtaBand, Doodle } from "@/components/ui";
@@ -19,7 +20,7 @@ export default function Home() {
           <div className={styles.heroActions}><Link href="/programs" className="button">Explore Programs <ArrowIcon/></Link><Link href="/about" className={styles.heroAbout}>Meet SportAbility <ArrowUpRight size={18} aria-hidden="true"/></Link></div>
         </div>
         <div className={styles.heroVisual}>
-          <div className={styles.heroPhoto}><Image src="/images/hero-soccer.webp" alt="Illustrative scene of a child practicing a soccer pass with a coach and parent nearby" fill loading="eager" fetchPriority="high" sizes="(max-width: 600px) calc(100vw - 52px), (max-width: 767px) calc(100vw - 60px), (max-width: 1296px) calc(52vw - 76px), 598px" quality={75}/></div>
+          <div className={styles.heroPhoto}><Image src={heroSoccer} alt="Illustrative scene of a child practicing a soccer pass with a coach and parent nearby" fill loading="eager" fetchPriority="high" sizes="(max-width: 600px) calc(100vw - 52px), (max-width: 767px) calc(100vw - 60px), (max-width: 1296px) calc(52vw - 76px), 598px" quality={75}/></div>
           <Doodle kind="spark" className={styles.heroSpark}/><Doodle kind="ball" className={styles.heroBall}/><Doodle kind="star" className={styles.heroStar}/>
         </div>
       </div>

@@ -1,3 +1,8 @@
+import type { StaticImageData } from "next/image";
+import groupSoccer from "../../public/images/home-group-soccer.webp";
+import groupDrills from "../../public/images/home-group-drills.webp";
+import individualSoccer from "../../public/images/individual-soccer-clean.webp";
+
 export const contact = {
   email: "sportabilityathletics@gmail.com",
   phone: "661-427-3747",
@@ -13,8 +18,8 @@ export type Program = {
   price: number;
   description: string;
   features: readonly string[];
-  image: string;
-  homeImage: { src: string; alt: string };
+  image: StaticImageData;
+  homeImage: { src: string | StaticImageData; alt: string };
 };
 
 export const programs: readonly Program[] = [
@@ -25,9 +30,9 @@ export const programs: readonly Program[] = [
     price: 210,
     description: "A place to learn the game, find a teammate, and grow in confidence. One supportive session each week for six weeks.",
     features: ["6 sessions, once a week", "Small-group adaptive soccer", "Social development woven into play", "Team-building activities", "Individualized adaptations", "Parent and athlete involvement"],
-    image: "/images/group-soccer.webp",
+    image: groupSoccer,
     homeImage: {
-      src: "/images/home-group-drills.webp",
+      src: groupDrills,
       alt: "Illustrative scene of children practicing dribbling through yellow cones on a soccer field with a coach",
     },
   },
@@ -38,7 +43,7 @@ export const programs: readonly Program[] = [
     price: 300,
     description: "Dedicated attention. A comfortable pace. Soccer built around your athlete’s own strengths and goals.",
     features: ["Individualized athletic goals", "Adaptive soccer skill development", "Social and communication goals where appropriate"],
-    image: "/images/individual-soccer-clean.webp",
+    image: individualSoccer,
     homeImage: {
       src: "/images/home-individual-passing.webp",
       alt: "Illustrative scene of a boy practicing a pass through blue cones to his coach on a soccer field",
