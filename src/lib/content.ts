@@ -52,4 +52,4 @@ export const programs: readonly Program[] = [
 ];
 
 export const audience = ["Autism", "Down syndrome", "ADHD", "Intellectual disabilities", "Developmental delays", "Social-communication differences"];
-export const tagline = "Every Athlete, Every Ability, Empowered Through Sports.";
+export const tagline = "Every Athlete. Empowered Through Sports";

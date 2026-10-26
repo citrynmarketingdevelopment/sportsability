@@ -24,7 +24,7 @@
 .welcome > div > p { color: var(--muted); line-height: 1.7; font-size: 1.0625rem; margin-top: 20px; max-width: 430px; }
 .welcomeList { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 0 25px; }
 .welcomeList li { padding: 16px 0; border-bottom: 1px solid var(--line); font-weight: 600; line-height: 1.4; }
-.welcome > div > .welcomeNote { max-width: 100%; font-size: 0.9375rem; margin: 20px 0 19px; }
+.welcomeList + a { margin-top: 20px; }
 @media (max-width: 1023px) {
   .mission, .successInner, .welcome { gap: 50px; }
   .roles { gap: 38px; }

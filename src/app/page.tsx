@@ -15,7 +15,7 @@ export default function Home() {
       <div className={`container ${styles.heroGrid}`}>
         <div className={styles.heroCopy}>
           <p className="eyebrow">Adaptive sports in Bakersfield</p>
-          <h1>Every athlete.<span className={styles.heroAccent}>Every ability.<svg viewBox="0 0 420 20" fill="none" aria-hidden="true"><path d="M4 10C111 1 238 2 414 8M22 16C154 10 284 9 388 13" stroke="currentColor" strokeWidth="4" strokeLinecap="round"/></svg></span></h1>
+          <h1>Every Athlete.<span className={styles.heroAccent}>Empowered<br/>Through Sports<svg viewBox="0 0 420 20" fill="none" aria-hidden="true"><path d="M4 10C111 1 238 2 414 8M22 16C154 10 284 9 388 13" stroke="currentColor" strokeWidth="4" strokeLinecap="round"/></svg></span></h1>
           <p className={styles.heroDescription}>Adaptive soccer in Bakersfield, helping children build skills, confidence, and friendships.</p>
           <div className={styles.heroActions}><Link href="/programs" className="button">Explore Programs <ArrowIcon/></Link><Link href="/about" className={styles.heroAbout}>Meet SportAbility <ArrowUpRight size={18} aria-hidden="true"/></Link></div>
         </div>

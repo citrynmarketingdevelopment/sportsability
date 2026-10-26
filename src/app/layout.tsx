@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Nunito_Sans, Source_Sans_3 } from "next/font/google";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { tagline } from "@/lib/content";
 import "./globals.css";
 
 const heading = Nunito_Sans({ subsets: ["latin"], variable: "--font-heading", display: "swap" });
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
   title: { default: "SportAbility | Adaptive Soccer in Bakersfield", template: "%s | SportAbility" },
   description: "Adaptive soccer for children of all abilities in Bakersfield. Build skills, confidence, and friendships through small-group and one-on-one programs.",
   robots: { index: indexable, follow: indexable },
-  openGraph: { title: "Every athlete. Every ability. | SportAbility", description: "Adaptive soccer in Bakersfield, helping children build skills, confidence, and friendships.", siteName: "SportAbility", locale: "en_US", type: "website" },
+  openGraph: { title: `${tagline} | SportAbility`, description: "Adaptive soccer in Bakersfield, helping children build skills, confidence, and friendships.", siteName: "SportAbility", locale: "en_US", type: "website" },
   twitter: { card: "summary_large_image" },
 };
 

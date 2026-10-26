@@ -61,7 +61,7 @@ export function RegistrationForm({ configuration, initialProgram, submissionId }
           <Field name="athleteAge" label="Age (in years)" error={state.errors.athleteAge}><input id="athleteAge" name="athleteAge" type="number" min={0} max={99} step={1} inputMode="numeric" value={values.athleteAge} onChange={update} required {...fieldA11y("athleteAge", state)} /></Field>
           <Field name="gender" label="Gender" optional error={state.errors.gender}><input id="gender" name="gender" maxLength={60} value={values.gender} onChange={update} {...fieldA11y("gender", state)} /></Field>
         </div>
-        <Field name="aboutAthlete" label="Tell us about your athlete" optional hint="Share their interests, goals, or what helps them feel comfortable. Please avoid medical or diagnostic details." error={state.errors.aboutAthlete}>
+        <Field name="aboutAthlete" label="Tell us about your athlete" optional hint="Share their interests, goals, or what helps them feel comfortable." error={state.errors.aboutAthlete}>
           <textarea id="aboutAthlete" name="aboutAthlete" rows={4} maxLength={2000} value={values.aboutAthlete} onChange={update} {...fieldA11y("aboutAthlete", state, true)} />
         </Field>
       </fieldset>

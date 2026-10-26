@@ -58,7 +58,7 @@ No custom Vercel adapter or `vercel.json` is needed. Until credentials are suppl
 ## Content and brand
 
 - Edit program information in `src/lib/content.ts`. Only the two current soccer offerings are selectable. Program CTA query values are validated against this collection.
-- Keep the supplied `SportsAbility.svg` unchanged; its exact copy is served from `public/brand/sportability.svg` and used as the site icon.
+- Keep the supplied `SportsAbility.svg` unchanged as the original brand asset. The website version in `public/brand/sportability.svg` and the site icon use the updated slogan: “Every Athlete. Empowered Through Sports”.
 - Core colors, spacing, buttons, and typography live in `src/app/globals.css`; components use CSS Modules. Nunito Sans and Source Sans 3 are self-hosted by `next/font`.
 - The theme is intentionally light. Motion is limited to interaction feedback, with reduced-motion support.
 - Prices remain $210 and $300, with a separate $25 enrollment-fee note until the total is confirmed.

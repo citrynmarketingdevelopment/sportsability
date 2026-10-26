@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowIcon, CtaBand, Doodle, PageIntro } from "@/components/ui";
+import { tagline } from "@/lib/content";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
@@ -16,8 +17,8 @@ const welcomes = ["Autism", "Down syndrome", "ADHD", "Intellectual disabilities"
 export default function AboutPage() {
   return (
     <>
-      <PageIntro eyebrow="ABOUT SPORTABILITY" title="A place to play. A place to belong.">
-        Every Athlete, Every Ability, Empowered Through Sports.
+      <PageIntro eyebrow="ABOUT SPORTABILITY" title="About SportAbility">
+        {tagline}
       </PageIntro>
 
       <section className={`container section ${styles.mission}`} aria-labelledby="mission-heading">
@@ -35,7 +36,7 @@ export default function AboutPage() {
           <Doodle kind="heart" className={styles.photoHeart} />
         </div>
         <div className={styles.missionCopy}>
-          <h2 id="mission-heading">Because every child deserves a team.</h2>
+          <h2 id="mission-heading">Our mission</h2>
           <p>
             SportAbility is an adaptive sports program designed to help children of all abilities develop athletic skills while building confidence, friendships, and meaningful connections.
           </p>
@@ -99,9 +100,6 @@ export default function AboutPage() {
         </div>
         <div>
           <ul className={styles.welcomeList}>{welcomes.map((item) => <li key={item}>{item}</li>)}</ul>
-          <p className={styles.welcomeNote}>
-            Every athlete is more than a label. A diagnosis isn’t required to start a conversation about your child.
-          </p>
           <Link href="/contact" className="text-link">Contact Us <ArrowIcon /></Link>
         </div>
       </section>
