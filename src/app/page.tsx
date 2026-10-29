@@ -26,8 +26,11 @@ export default function Home() {
       </div>
     </section>
 
-    <section className={styles.welcome}>
-      <div className={`container ${styles.welcomeInner}`}><Doodle kind="heart" className={styles.welcomeHeart}/><h2>A little play.<br/>A lot of possibility.</h2><div><p>Learning a new skill. Passing to a teammate. Finding the confidence to try again.</p><p>At SportAbility, those moments matter. We meet your child where they are and make room for their own way to grow.</p></div></div>
+    <section className={styles.belong}>
+      <div className={`container ${styles.belongGrid}`}>
+        <div className={styles.familyPhoto}><Image src="/images/family-connection.webp" alt="Illustrative scene of a parent and child sharing a happy moment beside a soccer field" fill sizes="(max-width: 767px) 100vw, 45vw"/><Doodle kind="heart" className={styles.familyHeart}/></div>
+        <div className={styles.belongCopy}><h2>Your child’s own pace.<br/>A team in their corner.</h2><p>Every child brings their own strengths. We welcome athletes with a wide range of developmental, learning, and social differences, including:</p><ul className={styles.audience}>{audience.map(item => <li key={item}><Check size={17} weight="bold" aria-hidden="true"/>{item}</li>)}</ul><p className={styles.fitNote}>Not sure where to start? Tell us a little about your athlete. We’ll talk through the possibilities together.</p><Link href="/contact" className="text-link">Contact Us <ArrowIcon/></Link></div>
+      </div>
     </section>
 
     <section className={`section ${styles.programSection}`}>
@@ -46,11 +49,8 @@ export default function Home() {
       </div>
     </section>
 
-    <section className={styles.belong}>
-      <div className={`container ${styles.belongGrid}`}>
-        <div className={styles.familyPhoto}><Image src="/images/family-connection.webp" alt="Illustrative scene of a parent and child sharing a happy moment beside a soccer field" fill sizes="(max-width: 767px) 100vw, 45vw"/><Doodle kind="heart" className={styles.familyHeart}/></div>
-        <div className={styles.belongCopy}><h2>Your child’s own pace.<br/>A team in their corner.</h2><p>Every child brings their own strengths. We welcome athletes with a wide range of developmental, learning, and social differences, including:</p><ul className={styles.audience}>{audience.map(item => <li key={item}><Check size={17} weight="bold" aria-hidden="true"/>{item}</li>)}</ul><p className={styles.fitNote}>Not sure where to start? Tell us a little about your athlete. We’ll talk through the possibilities together.</p><Link href="/contact" className="text-link">Contact Us <ArrowIcon/></Link></div>
-      </div>
+    <section className={styles.welcome}>
+      <div className={`container ${styles.welcomeInner}`}><Doodle kind="heart" className={styles.welcomeHeart}/><h2>A little play.<br/>A lot of possibility.</h2><div><p>Learning a new skill. Passing to a teammate. Finding the confidence to try again.</p><p>At SportAbility, those moments matter. We meet your child where they are and make room for their own way to grow.</p></div></div>
     </section>
 
     <section className={`section ${styles.approach}`}>
