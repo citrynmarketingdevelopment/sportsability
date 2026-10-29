@@ -47,16 +47,16 @@ export default function PrivacyPage() {
           <section aria-labelledby="delivery-heading">
             <h2 id="delivery-heading">Where form information goes</h2>
             <p>
-              Form messages are delivered to SportAbility’s email inbox using Resend. Resend processes and may retain email content and delivery information, and messages are stored in SportAbility’s Gmail inbox. The website does not have an application database or parent accounts. Form content is not intentionally written to website logs, analytics, URLs, or browser storage.
+              Form messages are delivered to SportAbility’s email inbox using SMTP.com. SMTP.com processes and may retain email content and delivery information, and messages are sent to SportAbility’s and Citryn’s contact-form Gmail inboxes. The website does not have an application database or parent accounts. Form content is not intentionally written to website logs, analytics, URLs, or browser storage.
             </p>
             <p>
-              Email services have their own privacy and retention practices. You can read the <a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer">Resend privacy policy</a> and <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google privacy policy</a> for more information.
+              Email services have their own privacy and retention practices. You can read the <a href="https://www.smtp.com/privacy-policy/" target="_blank" rel="noopener noreferrer">SMTP.com privacy policy</a> and <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google privacy policy</a> for more information.
             </p>
           </section>
           <section aria-labelledby="security-heading">
             <h2 id="security-heading">Spam protection and hosting</h2>
             <p>
-              The forms use Cloudflare Turnstile to help prevent automated spam. Cloudflare may process technical information about your browser, device, and network to perform this verification. See the <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer">Cloudflare privacy policy</a> for its practices.
+              The forms use a honeypot to help prevent automated spam. No third-party challenge widget is used.
             </p>
             <p>
               The website is hosted with Vercel. Hosting and security providers may process technical request information, such as IP addresses and browser information, to deliver and protect the website. No advertising trackers or analytics tools have been added to this website.
@@ -69,7 +69,7 @@ export default function PrivacyPage() {
             </p>
             <p>You may also contact us directly instead of using a website form.</p>
           </section>
-          <p className={styles.updated}>Last updated: October 1, 2026</p>
+          <p className={styles.updated}>Last updated: October 29, 2026</p>
         </article>
       </div>
     </>

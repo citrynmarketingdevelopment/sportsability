@@ -36,7 +36,6 @@
 .program > p { color: var(--muted); margin-top: 14px; max-width: 490px; }
 .program .fee { font-size: 13px; margin-top: 15px; }
 .program > a:last-child { font-size: 16px; margin-top: 24px; }
-.moreSports { margin-top: 46px; font-size: 15px; text-align: center; color: var(--muted); padding-top: 26px; border-top: 1px solid var(--line); }
 .belong { padding-block: 82px; background: var(--pale-green); }
 .belongGrid { display: grid; grid-template-columns: .95fr 1.05fr; gap: 76px; align-items: center; }
 .familyPhoto { position: relative; aspect-ratio: .97; border-radius: var(--radius); }
@@ -87,7 +86,6 @@
   .programArrow { width: 74px; height: 74px; left: auto; right: 10px; bottom: 36px; }
   .sectionTitle { margin-bottom: 30px; }
   .sectionTitle h2 { max-width: 80%; }
-  .moreSports { margin-top: 34px; }
   .belong { padding-block: 56px; }
   .belongGrid { grid-template-columns: 1fr; gap: 43px; }
   .familyPhoto { aspect-ratio: 1.2; margin-inline: 5px; }
@@ -96,3 +94,5 @@
   .approachInner { grid-template-columns: 1fr; gap: 24px; }
   .growthList > div { padding-block: 23px; gap: 20px; }
 }
+
+.programSection { padding-bottom: 48px; }

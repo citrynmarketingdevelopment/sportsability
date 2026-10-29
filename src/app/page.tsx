@@ -45,7 +45,6 @@ export default function Home() {
             <Link href={`/register?program=${program.id}`} className="text-link">{index === 0 ? "Apply for Group Soccer" : "Apply for 1-on-1 Soccer"}<ArrowIcon/></Link>
           </article>)}
         </div>
-        <p className={styles.moreSports}>Starting with soccer. Growing toward more ways to play.</p>
       </div>
     </section>
 

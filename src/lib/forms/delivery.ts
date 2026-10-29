@@ -1,46 +1,46 @@
 import { createHmac } from "node:crypto";
-import { Resend } from "resend";
 import { programs } from "@/lib/content";
 import { getDeliveryConfiguration, type DeliveryConfiguration } from "./config";
 import { contactSchema, registrationSchema, securitySchema, readFields, type ContactInput, type RegistrationInput } from "./schemas";
 import type { FormKind, FormState } from "./types";
+import { emailHtml } from "./templates";
 
-type Mail = { from: string; to: string; replyTo: string; subject: string; text: string };
+type Mail = { from: string; to: string[]; replyTo: string; subject: string; text: string; html: string };
 export type DeliveryDependencies = {
   configuration: () => DeliveryConfiguration | null;
-  verify: (token: string, kind: FormKind, configuration: DeliveryConfiguration) => Promise<boolean>;
   send: (mail: Mail, key: string, configuration: DeliveryConfiguration) => Promise<boolean>;
 };
-
-export async function verifyTurnstile(token: string, kind: FormKind, configuration: DeliveryConfiguration) {
-  try {
-    const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({ secret: configuration.secretKey, response: token }),
-      signal: AbortSignal.timeout(10_000),
-      cache: "no-store",
-    });
-    if (!response.ok) return false;
-    const result: unknown = await response.json();
-    if (!result || typeof result !== "object") return false;
-    const checked = result as Record<string, unknown>;
-    return checked.success === true && checked.action === kind &&
-      typeof checked.hostname === "string" && configuration.allowedHostnames.includes(checked.hostname.toLowerCase());
-  } catch {
-    return false;
-  }
+export async function sendSmtp(mail: Mail, _key: string, configuration: DeliveryConfiguration) {
+  const response = await fetch("https://api.smtp.com/v4/messages", {
+    method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json", "X-SMTPCOM-API": configuration.apiKey },
+    body: JSON.stringify({ channel: configuration.channel,
+      recipients: { to: mail.to.map(address => ({ address })) },
+      originator: { from: { name: "SportAbility Athletics", address: mail.from }, reply_to: { address: mail.replyTo } },
+      subject: mail.subject, body: { parts: [
+        { type: "text/plain", charset: "UTF-8", content: mail.text },
+        { type: "text/html", charset: "UTF-8", content: mail.html },
+      ] },
+    }), signal: AbortSignal.timeout(15_000),
+  });
+  if (!response.ok) return false;
+  const result = await response.json();
+  return result?.status === "success" && (typeof result.data?.msg_id === "string" && result.data.msg_id.trim().length > 0 ||
+    typeof result.data?.message === "string" && /^accepted,\s*msg_id:\s*[a-zA-Z0-9][a-zA-Z0-9._-]*\s*$/i.test(result.data.message));
 }
+const defaultDependencies: DeliveryDependencies = { configuration: getDeliveryConfiguration, send: sendSmtp };
 
-const defaultDependencies: DeliveryDependencies = {
-  configuration: getDeliveryConfiguration,
-  verify: verifyTurnstile,
-  send: async (mail, idempotencyKey, configuration) => {
-    const resend = new Resend(configuration.apiKey);
-    const result = await resend.emails.send(mail, { idempotencyKey });
-    return !result.error && Boolean(result.data?.id);
-  },
-};
+// Coalesce retries within a warm server instance; SMTP.com has no provider idempotency guarantee.
+const deliveries = new Map<string, Promise<boolean>>();
+async function sendOnce(mail: Mail, key: string, configuration: DeliveryConfiguration, dependencies: DeliveryDependencies) {
+  if (dependencies !== defaultDependencies) return dependencies.send(mail, key, configuration);
+  const existing = deliveries.get(key);
+  if (existing) return existing;
+  const delivery = dependencies.send(mail, key, configuration);
+  deliveries.set(key, delivery);
+  try { if (!(await delivery)) deliveries.delete(key); } catch { deliveries.delete(key); throw new Error("Delivery failed"); }
+  setTimeout(() => deliveries.delete(key), 600_000).unref();
+  return delivery;
+}
 
 function registrationText(data: RegistrationInput) {
   const selected = programs.find((program) => program.id === data.program);
@@ -96,33 +96,39 @@ export async function processSubmission(kind: FormKind, formData: FormData, atte
 
   const security = securitySchema.safeParse({
     ...readFields(formData, ["submissionId", "website"]),
-    token: readFields(formData, ["cf-turnstile-response"])["cf-turnstile-response"],
   });
-  if (!security.success) return error("We couldn’t verify this submission. Please complete the security check and try again.");
+  if (!security.success) return error("We couldn’t verify this submission. Please refresh the page and try again.");
 
   try {
-    if (!(await dependencies.verify(security.data.token, kind, configuration))) {
-      return error("The security check expired or could not be verified. Please complete the new check and try again.");
-    }
+    const text = kind === "registration" ? registrationText(parsed.data as RegistrationInput) : contactText(parsed.data as ContactInput);
     const mail: Mail = {
       from: configuration.from,
       to: configuration.to,
       replyTo: parsed.data.email,
       subject: kind === "registration" ? "New SportAbility program application" : "New SportAbility website message",
-      text: kind === "registration" ? registrationText(parsed.data as RegistrationInput) : contactText(parsed.data as ContactInput),
+      text,
+      html: emailHtml(kind === "registration" ? "A new athlete application" : "A new hello", text, false),
     };
-    // Provider deduplication lasts 24 hours. The token is deliberately excluded:
-    // a retry uses a fresh Turnstile token but the same delivery key and payload.
-    // HMAC prevents the key from disclosing or permitting guesses of submitted PII.
     const key = createHmac("sha256", configuration.apiKey)
       .update(JSON.stringify([kind, security.data.submissionId, mail])).digest("hex");
-    const accepted = await dependencies.send(mail, `sportability/${kind}/${key}`, configuration);
+    const accepted = await sendOnce(mail, `sportability/${kind}/${key}`, configuration, dependencies);
     if (!accepted) return error("We couldn’t send your message. Your details are still here; please try again, or contact us by phone or email.");
+    const thanks = kind === "registration"
+      ? "Thank you for your application! We’re excited to learn more about your athlete. Our team will contact you to discuss goals, program availability, and next steps. Your application is not a confirmed enrollment, and no payment has been collected."
+      : "Thank you for reaching out! Your message is with the SportAbility team. We’ll be in touch soon and look forward to helping your family find their next step.";
+    let confirmationSent = false;
+    try {
+      confirmationSent = await sendOnce({ from: configuration.from, to: [parsed.data.email], replyTo: "sportabilityathletics@gmail.com",
+        subject: "Thank you for connecting with SportAbility!", text: thanks + "\n\nSportAbility Athletics\n661-427-3747\nsportabilityathletics@gmail.com",
+        html: emailHtml("A little hello. A big thank you.", thanks, true),
+      }, `sportability/thanks/${key}`, configuration, dependencies);
+    } catch { /* The team already has the submission. Never ask the visitor to resend it. */ }
+    const confirmationNote = confirmationSent ? " A confirmation email is on its way." : " Your submission was received, but we couldn’t send your confirmation email.";
     return {
       status: "success",
-      message: kind === "registration"
+      message: (kind === "registration"
         ? "Your application has been sent. The team will contact you about next steps."
-        : "Your message has been sent. The team will be in touch.",
+        : "Your message has been sent. The team will be in touch.") + confirmationNote,
       errors: {},
       attempt: nextAttempt,
     };

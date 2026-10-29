@@ -25,35 +25,13 @@ The npm lockfile pins installed dependencies. No Tailwind, database, account sys
 
 ## Configure form delivery
 
-Copy `.env.example` to `.env.local` for local configuration. Keep secrets out of Git. Both forms use Next.js Server Actions, server-side Zod validation, a honeypot, Cloudflare Turnstile, and plain-text Resend emails.
+Copy `.env.example` to `.env.local`. Forms use Server Actions, Zod validation, a honeypot, and SMTP.com's API, matching trends-frontend. No Turnstile is required.
 
-| Variable | Purpose |
-| --- | --- |
-| `SITE_URL` | Canonical production origin, such as your owned HTTPS domain |
-| `RESEND_API_KEY` | Server-only Resend API key |
-| `FORM_FROM_EMAIL` | Bare email address on an owned domain verified in Resend; no display-name wrapper |
-| `FORM_TO_EMAIL` | Server-only recipient; defaults to `sportabilityathletics@gmail.com` |
-| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Public Cloudflare widget key |
-| `TURNSTILE_SECRET_KEY` | Server-only Cloudflare verification secret |
-| `TURNSTILE_ALLOWED_HOSTNAMES` | Comma-separated exact hostnames, without scheme, port, or path |
+Set `SMTP_API`, `SMTP_CHANNEL`, and optionally `FORM_FROM_EMAIL` (defaults to authenticated sender `contactforms@citryn.com`). Set `SITE_URL` to the canonical origin. Never commit secrets.
 
-The Gmail inbox is the recipient, not the sender. Verify your sending domain's DNS in Resend, create a sender on it, and set `FORM_FROM_EMAIL`. Parent email is used only as Reply-To; visitors cannot choose the recipient or sender.
+Notifications go to citryn.contactforms@gmail.com and sportabilityathletics@gmail.com, with the visitor as Reply-To. Both forms send branded HTML and plain text, plus a separate thank-you email to the visitor. Thank-you emails do not repeat athlete details. Failed acknowledgments do not reject accepted submissions.
 
-Configure the Turnstile widget for the actual site hostname. The server checks hostname and the expected `contact` or `registration` action as well as verification success. Use Cloudflare's documented test keys only for local tests, never production. Redeploy after environment changes, especially the public site key.
-
-Successful submission means Resend accepted the email, not that enrollment is approved or inbox delivery is guaranteed. A stable per-page nonce and an HMAC of the normalized email payload deduplicate unchanged provider retries for Resend's 24-hour window. Editing content changes the delivery key. Refreshing the page creates a new nonce. Form data survives errors in memory, but is not saved across refreshes and is never stored in local/session storage or written to application logs. A fresh Turnstile token is used on each retry.
-
-Applications are stored by the email providers and the business inbox. No website database is involved. Provider accounts and inbox retention/access must be managed by the owner. The privacy page describes this actual flow without promising a retention period or regulatory certification.
-
-## Deploy to Vercel
-
-1. Import this project into Vercel with the Next.js framework preset and Node.js **24.x**. Use the repository root, `npm ci`, and `npm run build`; keep the default output directory.
-2. Set environment variables from the table. Keep production recipients and secrets scoped to Production; use a separate test recipient and exact hostname list for previews if enabling their forms.
-3. Attach the owned domain and set `SITE_URL` to its canonical HTTPS origin.
-4. Deploy. Pages remain `noindex` unless Vercel marks the environment Production and `SITE_URL` is set. The registration page always stays `noindex`; the sitemap lists only indexable content pages.
-5. Send one synthetic contact message and one synthetic application. Confirm inbox arrival, correct Reply-To, and no duplicate email after retry. Never test with real child data. Check Resend delivery status if messages do not arrive.
-
-No custom Vercel adapter or `vercel.json` is needed. Until credentials are supplied, email delivery can be tested with mocks but cannot be verified end to end.
+Warm server instances coalesce unchanged retries for ten minutes. SMTP.com does not guarantee idempotency across instances or restarts. No website database is involved. Provider acceptance does not guarantee inbox placement.
 
 ## Content and brand
 
@@ -81,8 +59,4 @@ All six active images were generated with the built-in imagegen tool, then compr
 
 ## Verification
 
-Focused mocked tests cover input validation, program allowlisting, consent, duplicated/file fields, missing configuration, honeypot rejection, verification expiry/action/hostname, provider failures, and retry deduplication. Browser review covers all routes, responsive layout, menu behavior, CTA preselection, and unavailable states. Live delivery needs configured provider credentials and a synthetic inbox test after deployment.
-
-Implementation checks passed: ESLint, strict TypeScript, 29 focused tests, and the production build. All six pages were reviewed at 390px, 768px, and 1280px widths with no horizontal overflow or broken images. Keyboard checks covered navigation, menu dismissal, and FAQ controls.
-
-Local production Lighthouse results: homepage desktop performance 100, mobile performance 90, accessibility 100, and best practices 100. Registration accessibility and best practices both scored 100. Mobile simulated LCP was 3.5 seconds with zero layout shift; real deployment performance can differ. Preview SEO scored 69 because indexing is intentionally blocked. Reports are saved in the ignored `test-results` directory. Lighthouse encountered a Windows temporary-profile cleanup error after successfully writing its reports.
+Run lint, typecheck, tests, and production build. SMTP tests use mocked provider responses and synthetic data. Real inbox placement requires a separate delivery check.

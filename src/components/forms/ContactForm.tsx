@@ -4,7 +4,6 @@ import { useActionState, useState, type ChangeEvent } from "react";
 import { submitContact } from "@/app/actions";
 import { initialFormState, type FormConfiguration, type FormState } from "@/lib/forms/types";
 import { Field, fieldA11y, FormStatus, Honeypot, PrivacyNote, UnavailableNotice } from "./shared";
-import { Turnstile } from "./Turnstile";
 import styles from "./forms.module.css";
 
 export function ContactForm({ configuration, submissionId }: { configuration: FormConfiguration; submissionId: string }) {
@@ -33,7 +32,6 @@ export function ContactForm({ configuration, submissionId }: { configuration: Fo
         <Field name="message" label="How can we help?" error={state.errors.message}><textarea id="message" name="message" rows={5} maxLength={3000} value={values.message} onChange={update} required {...fieldA11y("message", state)} /></Field>
       </fieldset>
       <PrivacyNote />
-      {configuration.available && <Turnstile key={state.attempt} siteKey={configuration.siteKey} action="contact" />}
       <button type="submit" className={`button ${styles.submit}`} disabled={pending || !configuration.available}>{pending ? "Sending your message…" : "Send Message"}<span aria-hidden="true">↗</span></button>
     </>}
   </form>;

@@ -5,7 +5,6 @@ import { submitRegistration } from "@/app/actions";
 import { programs } from "@/lib/content";
 import { initialFormState, type FormConfiguration, type FormState } from "@/lib/forms/types";
 import { Field, fieldA11y, FormStatus, Honeypot, PrivacyNote, UnavailableNotice } from "./shared";
-import { Turnstile } from "./Turnstile";
 import styles from "./forms.module.css";
 
 export function RegistrationForm({ configuration, initialProgram, submissionId }: {
@@ -33,7 +32,7 @@ export function RegistrationForm({ configuration, initialProgram, submissionId }
       <p className={styles.requiredNote}>One application per athlete. All fields are required unless marked optional.</p>
       <input type="hidden" name="submissionId" value={submissionId} />
       <Honeypot />
-      <fieldset className={styles.fieldset} disabled={pending || !configuration.available}>
+      <fieldset className={styles.fieldset} disabled={pending}>
         <legend><span>01</span> Choose your program</legend>
         <div className={styles.programOptions}>
           {programs.map((program) => <label key={program.id} className={`${styles.programOption} ${values.program === program.id ? styles.selected : ""}`}>
@@ -73,7 +72,6 @@ export function RegistrationForm({ configuration, initialProgram, submissionId }
         {state.errors.contactConsent && <p id="contactConsent-error" className={styles.fieldError}>{state.errors.contactConsent[0]}</p>}
       </fieldset>
       <PrivacyNote />
-      {configuration.available && <Turnstile key={state.attempt} siteKey={configuration.siteKey} action="registration" />}
       <button type="submit" className={`button ${styles.submit}`} disabled={pending || !configuration.available}>{pending ? "Sending your application…" : "Send Application"}<span aria-hidden="true">↗</span></button>
       <p className={styles.afterSubmit}>No payment is collected here. We’ll get in touch to discuss fit, availability, and next steps.</p>
     </>}

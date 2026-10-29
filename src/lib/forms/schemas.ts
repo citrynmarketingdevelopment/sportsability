@@ -31,7 +31,6 @@ export const registrationSchema = z.object({
 
 export const securitySchema = z.object({
   submissionId: z.uuid(),
-  token: z.string().min(1).max(2048),
   website: z.literal(""),
 });
 

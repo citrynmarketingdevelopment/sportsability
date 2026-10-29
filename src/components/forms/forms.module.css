@@ -89,3 +89,8 @@
 @media (prefers-reduced-motion: reduce) {
   .field input, .field textarea { transition: none; }
 }
+
+.programOptions { gap: 6px; padding: 6px; background: #edf3f8; border-radius: 14px; }
+.programOption { border-color: transparent; transition: background .16s, box-shadow .16s; }
+.programOption.selected { background: white; box-shadow: 0 2px 8px #15364b18; border-color: var(--blue); }
+.programOption:focus-within { outline: 2px solid var(--blue); outline-offset: 2px; }

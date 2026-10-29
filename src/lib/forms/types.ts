@@ -14,4 +14,4 @@ export const initialFormState: FormState = {
   attempt: 0,
 };
 
-export type FormConfiguration = { available: boolean; siteKey: string };
+export type FormConfiguration = { available: boolean };

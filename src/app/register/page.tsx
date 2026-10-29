@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default async function RegisterPage({ searchParams }: { searchParams: Promise<{ program?: string | string[] }> }) {
   const query = await searchParams;
-  const initialProgram = typeof query.program === "string" && programs.some((program) => program.id === query.program) ? query.program : "";
+  const initialProgram = typeof query.program === "string" && programs.some((program) => program.id === query.program) ? query.program : programs[0].id;
 
   return <>
     <header className={styles.pageHeader}>

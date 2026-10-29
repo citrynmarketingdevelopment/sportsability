@@ -1,20 +1,17 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { processSubmission, verifyTurnstile, type DeliveryDependencies } from "../src/lib/forms/delivery";
+import { processSubmission, sendSmtp, type DeliveryDependencies } from "../src/lib/forms/delivery";
 import { getFormConfiguration, type DeliveryConfiguration } from "../src/lib/forms/config";
 
 const configuration: DeliveryConfiguration = {
   apiKey: "test-key-do-not-use",
   from: "website@sportability.example",
-  to: "sportabilityathletics@gmail.com",
-  siteKey: "test-site-key",
-  secretKey: "test-secret-key",
-  allowedHostnames: ["sportability.example"],
+  to: ["citryn.contactforms@gmail.com", "sportabilityathletics@gmail.com"],
+  channel: "test-channel",
 };
 
 function dependencies() {
   return {
     configuration: () => configuration,
-    verify: vi.fn().mockResolvedValue(true),
     send: vi.fn().mockResolvedValue(true),
   } satisfies DeliveryDependencies;
 }
@@ -36,7 +33,6 @@ function form(kind = "registration", changes: Record<string, string> = {}) {
     phone: "661-555-0123",
     submissionId: "213839f0-d9b8-4c69-ae40-71959b6b137e",
     website: "",
-    "cf-turnstile-response": "synthetic-test-token",
     ...changes,
   };
   for (const [key, value] of Object.entries(values)) data.set(key, value);
@@ -50,13 +46,12 @@ describe("form validation and delivery", () => {
     const deps = dependencies();
     const result = await processSubmission("registration", form(), 0, deps);
     expect(result.status).toBe("success");
-    expect(result.message).toBe("Your application has been sent. The team will contact you about next steps.");
-    expect(deps.verify).toHaveBeenCalledWith("synthetic-test-token", "registration", configuration);
+    expect(result.message).toContain("Your application has been sent.");
     const [mail] = deps.send.mock.calls[0];
     expect(mail).toMatchObject({ to: configuration.to, from: configuration.from, replyTo: "parent@example.com" });
     expect(mail.text).toContain("6-Week Adaptive Soccer");
     expect(mail.text).toContain("Age in years: 8");
-    expect(mail).not.toHaveProperty("html");
+    expect(mail.html).toContain("email-logo.png");
     expect(result).not.toHaveProperty("values");
   });
 
@@ -83,7 +78,6 @@ describe("form validation and delivery", () => {
     const result = await processSubmission("registration", form("registration", { [field]: value }), 0, deps);
     expect(result.status).toBe("error");
     expect(result.errors[field]).toBeDefined();
-    expect(deps.verify).not.toHaveBeenCalled();
     expect(deps.send).not.toHaveBeenCalled();
   });
 
@@ -99,7 +93,7 @@ describe("form validation and delivery", () => {
   });
 
   it.each([
-    ["website", "spam.example"], ["cf-turnstile-response", ""], ["cf-turnstile-response", "x".repeat(2049)], ["submissionId", "bad-id"],
+    ["website", "spam.example"], ["submissionId", "bad-id"],
   ])("rejects invalid security field %s without delivery", async (field, value) => {
     const deps = dependencies();
     expect((await processSubmission("registration", form("registration", { [field]: value }), 0, deps)).status).toBe("error");
@@ -114,30 +108,6 @@ describe("form validation and delivery", () => {
     expect(deps.send).not.toHaveBeenCalled();
   });
 
-  it("requires a fresh security check after an expired or reused token", async () => {
-    const deps = dependencies();
-    deps.verify.mockResolvedValue(false);
-    const result = await processSubmission("registration", form(), 3, deps);
-    expect(result.status).toBe("error");
-    expect(result.message).toContain("expired");
-    expect(result.attempt).toBe(4);
-    expect(deps.send).not.toHaveBeenCalled();
-  });
-
-  it("deduplicates unchanged retries with fresh verification tokens, but permits changed submissions", async () => {
-    const deps = dependencies();
-    deps.send.mockResolvedValueOnce(false).mockResolvedValue(true);
-    const failed = await processSubmission("registration", form(), 0, deps);
-    expect(failed.status).toBe("error");
-    const retried = await processSubmission("registration", form("registration", { "cf-turnstile-response": "refreshed-token" }), failed.attempt, deps);
-    expect(retried.status).toBe("success");
-    expect(deps.send.mock.calls[0][1]).toBe(deps.send.mock.calls[1][1]);
-    expect(deps.send.mock.calls[0][0]).toEqual(deps.send.mock.calls[1][0]);
-    expect(deps.send.mock.calls[0][1]).not.toContain("parent@example.com");
-    await processSubmission("registration", form("registration", { aboutAthlete: "Updated goals" }), 2, deps);
-    expect(deps.send.mock.calls[2][1]).not.toBe(deps.send.mock.calls[1][1]);
-  });
-
   it("never reports success for provider failures or thrown network errors", async () => {
     const deps = dependencies();
     deps.send.mockRejectedValue(new Error("Provider error with sensitive information"));
@@ -148,34 +118,38 @@ describe("form validation and delivery", () => {
   });
 });
 
-describe("Turnstile verification", () => {
-  it.each([
-    [{ success: true, hostname: "sportability.example", action: "registration" }, true],
-    [{ success: false, "error-codes": ["timeout-or-duplicate"] }, false],
-    [{ success: true, hostname: "other.example", action: "registration" }, false],
-    [{ success: true, hostname: "sportability.example", action: "contact" }, false],
-    [{ success: true }, false],
-  ])("checks success, exact allowed hostname, and action", async (response, expected) => {
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify(response), { status: 200 })));
-    expect(await verifyTurnstile("synthetic-test-token", "registration", configuration)).toBe(expected);
-  });
-
-  it("fails closed on network errors", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("Connection lost")));
-    expect(await verifyTurnstile("synthetic-test-token", "contact", configuration)).toBe(false);
-  });
-});
-
-describe("public form configuration", () => {
-  it("requires all delivery settings and exposes only availability and the site key", () => {
-    vi.stubEnv("RESEND_API_KEY", "test-api-key");
-    vi.stubEnv("FORM_FROM_EMAIL", "website@sportability.example");
-    vi.stubEnv("FORM_TO_EMAIL", "");
-    vi.stubEnv("NEXT_PUBLIC_TURNSTILE_SITE_KEY", "site-key");
-    vi.stubEnv("TURNSTILE_SECRET_KEY", "secret-key");
-    vi.stubEnv("TURNSTILE_ALLOWED_HOSTNAMES", "sportability.example,www.sportability.example");
-    expect(getFormConfiguration()).toEqual({ available: true, siteKey: "site-key" });
-    vi.stubEnv("TURNSTILE_SECRET_KEY", "");
-    expect(getFormConfiguration()).toEqual({ available: false, siteKey: "" });
-  });
+describe("SMTP delivery", () => {
+ it.each([{status: "success", data: {msg_id: "123"}}, {status: "success", data: {message: "Accepted, msg_id: abc-123"}}])("accepts supported provider responses", async response => {
+  const fetcher = vi.fn().mockResolvedValue(new Response(JSON.stringify(response)));
+  vi.stubGlobal("fetch", fetcher);
+  expect(await sendSmtp({from: configuration.from, to: configuration.to, replyTo: "parent@example.com", subject: "Test", text: "Hello", html: "<p>Hello</p>"}, "key", configuration)).toBe(true);
+  const payload = JSON.parse(fetcher.mock.calls[0][1].body);
+  expect(payload.recipients.to).toHaveLength(2);
+  expect(payload.channel).toBe("test-channel");
+ });
+ it("rejects unaccepted responses", async () => {
+  vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify({status: "success", data: {}}))));
+  expect(await sendSmtp({from: configuration.from, to: configuration.to, replyTo: "parent@example.com", subject: "Test", text: "Hello", html: "Hello"}, "key", configuration)).toBe(false);
+ });
+ it("exposes availability without credentials", () => {
+  vi.stubEnv("SMTP_API", "key"); vi.stubEnv("SMTP_CHANNEL", "channel");
+  expect(getFormConfiguration()).toEqual({available:true});
+  vi.stubEnv("SMTP_API", ""); expect(getFormConfiguration()).toEqual({available:false});
+ });
+ it("sends a separate thank-you without athlete details", async () => {
+  const deps = dependencies();
+  await processSubmission("registration", form(), 0, deps);
+  expect(deps.send).toHaveBeenCalledTimes(2);
+  expect(deps.send.mock.calls[1][0].to).toEqual(["parent@example.com"]);
+  expect(deps.send.mock.calls[1][0].html).not.toContain("Test Athlete");
+ });
+ it("does not ask for resubmission when only acknowledgment fails", async () => {
+  const deps = dependencies(); deps.send.mockResolvedValueOnce(true).mockRejectedValueOnce(new Error("failure"));
+  const result = await processSubmission("contact", form("contact"), 0, deps);
+  expect(result.status).toBe("success"); expect(result.message).toContain("couldn’t send your confirmation");
+ });
+ it("escapes submitted markup in team HTML", async () => {
+  const deps = dependencies(); await processSubmission("contact", form("contact", {message:'<script>alert(1)</script>'}), 0, deps);
+  expect(deps.send.mock.calls[0][0].html).toContain('&lt;script&gt;');
+ });
 });
